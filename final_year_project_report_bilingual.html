@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books Library Final Year Project Report</title>
+  <style>
+    :root {
+      --paper: #f4efe6;
+      --card: #fffdf8;
+      --ink: #172534;
+      --muted: #5e6875;
+      --primary: #20486b;
+      --accent: #c77945;
+      --line: #e2dacc;
+      --soft-blue: #e6edf7;
+      --soft-gold: #f6ead7;
+      --soft-green: #e4f0ea;
+      --shadow: rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--paper);
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Georgia", "Arial", "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 12mm auto;
+      padding: 18mm;
+      background: white;
+      box-shadow: 0 20px 50px var(--shadow);
+      position: relative;
+    }
+
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at top right, rgba(199, 121, 69, 0.18), transparent 32%),
+        linear-gradient(135deg, #fdf8ef 0%, #ffffff 50%, #f7efe4 100%);
+    }
+
+    .cover-band {
+      padding: 8px 0 18px;
+      border-bottom: 2px solid var(--line);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .cover-title {
+      margin: 28px 0 10px;
+      font-size: 38px;
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .cover-title-ar {
+      margin: 0;
+      font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
+      font-size: 30px;
+      line-height: 1.45;
+      color: var(--primary);
+      direction: rtl;
+      text-align: right;
+    }
+
+    .lead {
+      max-width: 150mm;
+      margin-top: 18px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .summary-grid,
+    .feature-grid,
+    .screen-grid,
+    .stack-grid,
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-stats {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat,
+    .card {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+    }
+
+    .stat {
+      background: linear-gradient(180deg, #ffffff 0%, #faf5ee 100%);
+    }
+
+    .stat h3 {
+      margin: 0;
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .stat p,
+    .card p,
+    .stack-item p,
+    .screen p,
+    .future p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .meta-block {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .meta-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+    }
+
+    .meta-card h2,
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .page-number {
+      display: none;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .toc li {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      page-break-after: avoid;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section p {
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: var(--soft-blue);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill.gold {
+      background: var(--soft-gold);
+    }
+
+    .pill.green {
+      background: var(--soft-green);
+    }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      margin-top: 14px;
+    }
+
+    .arch-box,
+    .stack-item,
+    .screen,
+    .future {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: var(--card);
+    }
+
+    .arch-box h3,
+    .stack-item h3,
+    .screen h3,
+    .future h3 {
+      margin: 0;
+      font-size: 15px;
+      color: var(--primary);
+    }
+
+    .arch-box p,
+    .arch-box ul,
+    .stack-item ul {
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+    }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--accent);
+      background: #fff7f0;
+      border-radius: 12px;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    .table th,
+    .table td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      vertical-align: top;
+      text-align: left;
+    }
+
+    .table th {
+      background: #f8f2e8;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .rtl {
+      direction: rtl;
+      text-align: right;
+      font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
+    }
+
+    .rtl .table th,
+    .rtl .table td {
+      text-align: right;
+    }
+
+    .rtl ul {
+      margin: 8px 18px 0 0;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    @media print {
+      html,
+      body {
+        background: white;
+      }
+
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="page cover">
+    <div>
+      <div class="cover-band">Final Year Project Documentation</div>
+      <h1 class="cover-title">Books Library<br>Bilingual Reading and Audio Application</h1>
+      <h2 class="cover-title-ar">تقرير مشروع التخرج<br>لتطبيق مكتبة الكتب ثنائي اللغة للقراءة والاستماع</h2>
+      <p class="lead">
+        This document explains the implemented scope of the current application build, including the user-facing features,
+        system architecture, backend services, database structure, content pipeline, and future extension path.
+      </p>
+      <p class="lead rtl">
+        يشرح هذا المستند النطاق المنفذ فعلياً في النسخة الحالية من التطبيق، بما يشمل الخصائص الظاهرة للمستخدم،
+        وبنية النظام، وخدمات الخلفية، وهيكل قاعدة البيانات، وآلية تجهيز المحتوى، ومسار التطوير المستقبلي.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <h3>110</h3>
+          <p>Curated seed catalog entries configured in the backend.</p>
+        </div>
+        <div class="stat">
+          <h3>2</h3>
+          <p>Readable seed titles currently imported with full text.</p>
+        </div>
+        <div class="stat">
+          <h3>2</h3>
+          <p>Supported interface languages: English and Arabic.</p>
+        </div>
+        <div class="stat">
+          <h3>2</h3>
+          <p>Chapter audio voices available in the current app build.</p>
+        </div>
+      </div>
+
+      <div class="meta-block">
+        <div class="meta-card">
+          <p class="section-kicker">Project Identity</p>
+          <h2>Books Library</h2>
+          <p>
+            A Flutter-based digital library application connected to a Python FastAPI backend. The project combines book discovery,
+            bilingual interface support, in-app reading, personal favorites, Firebase authentication, and chapter-level audio playback.
+          </p>
+        </div>
+        <div class="meta-card rtl">
+          <p class="section-kicker">هوية المشروع</p>
+          <h2>Books Library</h2>
+          <p>
+            تطبيق مكتبة رقمية مبني باستخدام Flutter ومرتبط بخلفية Python FastAPI.
+            يجمع المشروع بين استكشاف الكتب، ودعم الواجهتين العربية والإنجليزية،
+            والقراءة داخل التطبيق، والمفضلة الشخصية، والمصادقة عبر Firebase،
+            وتشغيل الصوت لكل فصل.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Generated on 12 April 2026 for academic project presentation and submission.
+    </div>
+    <div class="page-number">1</div>
+  </section>
+
+  <section class="page">
+    <p class="section-kicker">Contents</p>
+    <h2 class="section-title">English Report Structure</h2>
+    <div class="toc">
+      <div class="card">
+        <ol>
+          <li>Project overview and objectives</li>
+          <li>Implemented features</li>
+          <li>User interface and screens</li>
+          <li>Technical architecture</li>
+          <li>Backend services and database</li>
+        </ol>
+      </div>
+      <div class="card">
+        <ol start="6">
+          <li>Content preparation and import pipeline</li>
+          <li>User workflow and data flow</li>
+          <li>Strengths and academic value</li>
+          <li>Current limitations</li>
+          <li>Future development roadmap</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section" style="margin-top: 28px;">
+      <p class="section-kicker">Overview</p>
+      <h2 class="section-title">1. Project Overview and Objectives</h2>
+      <p>
+        Books Library was designed as a bilingual book application that presents English and Arabic titles in a modern,
+        lightweight, and extendable format. The app does more than display catalog data: it allows users to browse,
+        search, save favorites, create accounts, read available titles inside the application, and listen to chapter audio generated on demand.
+      </p>
+      <p>
+        The central objective of the project is to demonstrate a complete digital reading system rather than a static interface.
+        For that reason, the work is divided into clear layers: a Flutter frontend, a FastAPI backend, a MySQL data store,
+        content import scripts, media caching for audio, and Firebase-based authentication for user access.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Flutter + Dart</span>
+        <span class="pill gold">FastAPI + Python</span>
+        <span class="pill green">MySQL</span>
+        <span class="pill">Firebase Auth</span>
+        <span class="pill gold">Audio Playback</span>
+        <span class="pill green">English / Arabic UI</span>
+      </div>
+      <div class="note">
+        Current seed configuration in the backend defines 100 English titles and 10 Arabic titles, while two books are imported as fully readable content in the app build.
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Implemented Scope</p>
+      <h2 class="section-title">2. Main Features Delivered</h2>
+      <div class="feature-grid">
+        <div class="card">
+          <h3>Curated bilingual home dashboard</h3>
+          <p>The home screen loads catalog statistics, featured books, readable books, English books, Arabic books, and curated classics from backend data.</p>
+        </div>
+        <div class="card">
+          <h3>Dynamic search and filtering</h3>
+          <p>Users can search by title or author and filter results by all books, readable books, English books, or Arabic books.</p>
+        </div>
+        <div class="card">
+          <h3>Personal favorites</h3>
+          <p>Each book can be saved to favorites. The selection persists locally across sessions using `shared_preferences` on native platforms and `localStorage` on web.</p>
+        </div>
+        <div class="card">
+          <h3>Authentication and profile</h3>
+          <p>Email and password sign-up, sign-in, sign-out, and profile display are implemented through Firebase Authentication.</p>
+        </div>
+        <div class="card">
+          <h3>Book details and reading state</h3>
+          <p>Every title opens a detailed bottom sheet showing language, chapters, pages, description, and whether the book is fully readable or catalog-only.</p>
+        </div>
+        <div class="card">
+          <h3>In-app reading experience</h3>
+          <p>Readable titles can be opened inside the app, where chapters and their page content are loaded and presented in a long-form reading layout.</p>
+        </div>
+        <div class="card">
+          <h3>Per-chapter audio generation</h3>
+          <p>The chapter page can request MP3 narration from the backend, choose between Rachel and Adam voices, and control playback with play, pause, resume, and stop.</p>
+        </div>
+        <div class="card">
+          <h3>Runtime language switching</h3>
+          <p>The entire interface can switch between English and Arabic using the in-app language toggle without rebuilding the project.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">English report continues with interface, architecture, backend, and evaluation sections.</div>
+    <div class="page-number">2</div>
+  </section>
+  <section class="page">
+    <div class="section">
+      <p class="section-kicker">Interface Design</p>
+      <h2 class="section-title">3. User Interface and Screen-Level Explanation</h2>
+      <div class="screen-grid">
+        <div class="screen">
+          <h3>Main shell</h3>
+          <p>A floating bottom navigation bar organizes the app into Favorites, Home, and Search. This creates a simple and memorable navigation structure.</p>
+        </div>
+        <div class="screen">
+          <h3>Home page</h3>
+          <p>Displays summary cards, featured titles, readable books, English and Arabic sections, and a curated grid, which helps users understand the library quickly.</p>
+        </div>
+        <div class="screen">
+          <h3>Search page</h3>
+          <p>Supports direct title and author lookup plus quick filters. This is useful when the catalog becomes larger.</p>
+        </div>
+        <div class="screen">
+          <h3>Saved page</h3>
+          <p>Shows favorite books only, creating a personalized shelf that survives app restarts.</p>
+        </div>
+        <div class="screen">
+          <h3>Authentication page</h3>
+          <p>Allows sign-up and sign-in through a compact email/password form connected to Firebase Authentication.</p>
+        </div>
+        <div class="screen">
+          <h3>User page</h3>
+          <p>Shows authenticated account data such as email and UID, plus logout functionality.</p>
+        </div>
+        <div class="screen">
+          <h3>Book details sheet</h3>
+          <p>Acts as the main decision point for each title by presenting metadata, chapter/page counts, reading availability, and a primary action button.</p>
+        </div>
+        <div class="screen">
+          <h3>Reader and chapter pages</h3>
+          <p>The reader shows full text across chapters, while the chapter page focuses on page-by-page reading and audio playback controls.</p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;">
+        A notable UI detail is that the app does not depend on external cover image downloads for every title. Instead, it generates stylized cover artwork using gradients,
+        monograms, badges, and typography. This keeps the interface visually consistent even when no real cover image is stored.
+      </p>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Architecture</p>
+      <h2 class="section-title">4. Technical Architecture</h2>
+      <div class="architecture">
+        <div class="arch-box">
+          <h3>Flutter Frontend</h3>
+          <ul>
+            <li>Material UI and custom theme</li>
+            <li>Localization delegates for English and Arabic</li>
+            <li>Pages, widgets, and lightweight state controllers</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>Application Services</h3>
+          <ul>
+            <li>`ApiService` for HTTP communication</li>
+            <li>`FavoritesController` for local saved state</li>
+            <li>`AuthService` for Firebase user actions</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>FastAPI Backend</h3>
+          <ul>
+            <li>REST endpoints for books, chapters, pages, summaries, and audio</li>
+            <li>Static media serving for generated MP3 files</li>
+            <li>Schema initialization on startup</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>Data and Media</h3>
+          <ul>
+            <li>MySQL tables for books and readable content</li>
+            <li>Chapter audio cache table</li>
+            <li>Audio files stored under `/media/audio`</li>
+          </ul>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Role</th>
+            <th>Why it matters in this project</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Presentation</td>
+            <td>Flutter pages and widgets</td>
+            <td>Provides a cross-platform interface for catalog browsing, reading, search, profile, and audio control.</td>
+          </tr>
+          <tr>
+            <td>State</td>
+            <td>ValueNotifier + InheritedNotifier</td>
+            <td>Keeps the architecture lightweight while still supporting live updates for locale changes and favorites.</td>
+          </tr>
+          <tr>
+            <td>Communication</td>
+            <td>HTTP + JSON</td>
+            <td>Separates UI from data services, making the app easier to extend and maintain.</td>
+          </tr>
+          <tr>
+            <td>Business logic</td>
+            <td>FastAPI routes and import scripts</td>
+            <td>Handles catalog queries, readable content access, audio generation, and source data preparation.</td>
+          </tr>
+          <tr>
+            <td>Persistence</td>
+            <td>MySQL and local storage</td>
+            <td>Supports both structured book data and personal client-side preferences.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">The architecture intentionally separates UI, data access, authentication, and media generation into small, understandable modules.</div>
+    <div class="page-number">3</div>
+  </section>
+
+  <section class="page">
+    <div class="section">
+      <p class="section-kicker">Backend</p>
+      <h2 class="section-title">5. Backend Services, API Design, and Database</h2>
+      <p>
+        The backend is implemented with FastAPI and starts by ensuring the required schema exists in MySQL. This keeps deployment simple:
+        the app can initialize the database structure automatically when the server starts instead of relying on a separate migration system for this project stage.
+      </p>
+      <p>
+        The main API endpoints are:
+      </p>
+      <ul>
+        <li><strong>`GET /books`</strong>: returns the full catalog with language, featured state, chapter count, page count, and readability state.</li>
+        <li><strong>`GET /books/summary`</strong>: returns total books, readable books, English books, and Arabic books for the dashboard cards.</li>
+        <li><strong>`GET /books/{book_id}/chapters`</strong>: returns the chapter list for a selected book.</li>
+        <li><strong>`GET /chapters/{chapter_id}/pages`</strong>: returns page content for one chapter.</li>
+        <li><strong>`GET /chapters/{chapter_id}/audio`</strong>: generates or reuses a chapter MP3 file and returns a playable media URL.</li>
+      </ul>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Database Table</th>
+            <th>Purpose</th>
+            <th>Stored Data</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>`books`</td>
+            <td>Master catalog</td>
+            <td>Title, author, description, language, featured flag, sort order, created date</td>
+          </tr>
+          <tr>
+            <td>`chapters`</td>
+            <td>Readable structure</td>
+            <td>Book-to-chapter relationship, chapter number, chapter title</td>
+          </tr>
+          <tr>
+            <td>`pages`</td>
+            <td>Readable content units</td>
+            <td>Page number and text content for each chapter</td>
+          </tr>
+          <tr>
+            <td>`chapter_audio`</td>
+            <td>Audio cache index</td>
+            <td>Voice-specific generated audio path for each chapter</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        The audio table uses a unique `(chapter_id, voice_name)` combination, which means the same chapter can cache different voices independently.
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Audio Pipeline</p>
+      <h2 class="section-title">6. Audio Generation and Media Strategy</h2>
+      <p>
+        The audio service is one of the strongest technical parts of the project. When a user opens a chapter and requests narration,
+        the backend loads chapter pages, builds a clean narration script, detects whether the content is mainly Arabic or English,
+        and then tries to create MP3 audio.
+      </p>
+      <p>
+        The preferred provider is ElevenLabs when its SDK and API key are available. If that is not possible, the backend falls back to Google Text-to-Speech (`gTTS`).
+        This fallback design improves reliability and demonstrates practical engineering, because the app can still function even when premium voice generation is unavailable.
+      </p>
+      <p>
+        Generated audio is stored under the backend media directory and reused in future requests. As a result, the first request may take a few seconds,
+        but later playback is faster because the app reads from cache instead of regenerating the file.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Rachel voice</span>
+        <span class="pill gold">Adam voice</span>
+        <span class="pill green">Language detection</span>
+        <span class="pill">Chunked text processing</span>
+        <span class="pill gold">Cached MP3 output</span>
+      </div>
+    </div>
+
+    <div class="footer-note">The backend combines catalog APIs, media generation, caching, and static file serving in one coherent service layer.</div>
+    <div class="page-number">4</div>
+  </section>
+
+  <section class="page">
+    <div class="section">
+      <p class="section-kicker">Content Pipeline</p>
+      <h2 class="section-title">7. Book Data Preparation and Import Workflow</h2>
+      <p>
+        The project does not rely only on manually typed catalog records. It includes dedicated Python scripts to prepare and import real readable content.
+        This makes the system more realistic for a final year project because it demonstrates how raw source material can be transformed into structured application data.
+      </p>
+      <div class="stack-grid">
+        <div class="stack-item">
+          <h3>English readable title import</h3>
+          <p>
+            `import_book.py` processes a clean JSON file for <em>Alice's Adventures in Wonderland</em>.
+            It repairs misencoded text, normalizes headings, builds chapter entries, and writes the result into MySQL.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>Arabic readable title import</h3>
+          <p>
+            `import_amwaj_akma.py` cleans raw Arabic page data, removes noise such as links and mixed-language artifacts,
+            groups pages into sections, exports a generated JSON file, and imports the structured content into the database.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>Seeded library catalog</h3>
+          <p>
+            `catalog_seed.py` inserts the full curated library list, applies featured ordering, resets old content when needed,
+            and re-imports the readable titles so the app starts from a known academic demo dataset.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>Catalog strategy</h3>
+          <p>
+            The app intentionally supports both catalog-only books and fully readable books. This allows the project to scale the library now
+            while still expanding full-text content progressively later.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Flow</p>
+      <h2 class="section-title">8. User Flow and Runtime Data Flow</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>User action</th>
+            <th>System response</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>User opens the app</td>
+            <td>Flutter initializes Firebase, loads favorites from storage, and shows the main shell.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>User enters Home or Search</td>
+            <td>`ApiService` requests catalog data and renders books using model classes.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>User opens a book</td>
+            <td>The details sheet displays metadata and decides whether reading is available.</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>User reads a title</td>
+            <td>The app loads chapters and pages and builds a long-form reading view.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>User requests audio</td>
+            <td>The backend generates or reuses chapter audio, returns a URL, and the app streams it with `audioplayers`.</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>User favorites a book or changes language</td>
+            <td>State updates immediately in the UI through lightweight notifiers.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Evaluation</p>
+      <h2 class="section-title">9. Strengths, Academic Value, and Current Limitations</h2>
+      <div class="summary-grid">
+        <div class="card">
+          <h3>Strengths</h3>
+          <ul>
+            <li>Clear separation between frontend, backend, storage, and media generation</li>
+            <li>Strong bilingual support at the UI and content level</li>
+            <li>Functional reading and audio features instead of a catalog-only demo</li>
+            <li>Practical content import workflow for future expansion</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Current limitations</h3>
+          <ul>
+            <li>Only two seeded titles currently include full readable content</li>
+            <li>Favorites are local to the device and not cloud-synced per account</li>
+            <li>Authentication is limited to email/password and basic profile data</li>
+            <li>No admin dashboard or recommendation engine has been added yet</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">A strong final-year project is not only about features but also about system structure, extensibility, and demonstrable engineering decisions. This project has all three.</div>
+    <div class="page-number">5</div>
+  </section>
+
+  <section class="page">
+    <div class="section">
+      <p class="section-kicker">Future Scope</p>
+      <h2 class="section-title">10. Recommended Next Development Steps</h2>
+      <div class="future-grid">
+        <div class="future">
+          <h3>Expand readable content</h3>
+          <p>Import additional English and Arabic titles so a larger percentage of the catalog becomes fully readable inside the app.</p>
+        </div>
+        <div class="future">
+          <h3>Cloud-synced user library</h3>
+          <p>Store favorites, reading progress, and voice preferences per account so users keep their experience across devices.</p>
+        </div>
+        <div class="future">
+          <h3>Offline reading mode</h3>
+          <p>Cache chapters and audio locally to support limited connectivity and improve performance.</p>
+        </div>
+        <div class="future">
+          <h3>Admin content dashboard</h3>
+          <p>Create a management panel to add books, import files, edit metadata, and review generated media.</p>
+        </div>
+        <div class="future">
+          <h3>Advanced recommendations</h3>
+          <p>Add category-based discovery, recently read titles, and behavior-driven suggestions.</p>
+        </div>
+        <div class="future">
+          <h3>Stronger production readiness</h3>
+          <p>Introduce secure environment management, deployment configuration, analytics, testing expansion, and richer error monitoring.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">Conclusion</p>
+      <h2 class="section-title">11. English Conclusion</h2>
+      <p>
+        Books Library is a complete and credible final year project because it demonstrates both product thinking and real engineering implementation.
+        The application is not limited to a static user interface; it includes structured data management, authentication, localized user experience,
+        real reading flows, audio generation, and a backend architecture that can continue growing.
+      </p>
+      <p>
+        In academic terms, the project shows the full lifecycle of a software product: content preparation, database design, API construction,
+        frontend development, persistent state handling, user account integration, and feature delivery in a usable interface.
+        This makes the project suitable not only for demonstration, but also for technical discussion during evaluation.
+      </p>
+    </div>
+
+    <div class="section rtl">
+      <p class="section-kicker">بداية التقرير العربي</p>
+      <h2 class="section-title">التقرير العربي</h2>
+      <p>
+        تبدأ الصفحات التالية بعرض نفس المشروع باللغة العربية، مع التركيز على الفكرة العامة، والخصائص المنفذة، والبنية التقنية،
+        وآلية تجهيز الكتب، والقيمة العلمية للمشروع، ومجالات التطوير المستقبلية.
+      </p>
+    </div>
+
+    <div class="footer-note">Arabic section starts on the next page.</div>
+    <div class="page-number">6</div>
+  </section>
+  <section class="page rtl">
+    <div class="section">
+      <p class="section-kicker">نظرة عامة</p>
+      <h2 class="section-title">1. مقدمة عن المشروع وأهدافه</h2>
+      <p>
+        تم تطوير تطبيق <strong>Books Library</strong> كمكتبة رقمية ثنائية اللغة تعرض كتباً باللغة الإنجليزية والعربية داخل واجهة حديثة وقابلة للتوسع.
+        المشروع لا يقتصر على عرض قائمة كتب فقط، بل يوفر استكشافاً للمحتوى، والبحث، والمفضلة، وإنشاء الحسابات، والقراءة داخل التطبيق،
+        وتشغيل الصوت لكل فصل عند الطلب.
+      </p>
+      <p>
+        الهدف الرئيسي من المشروع هو تقديم نظام قراءة رقمي متكامل يوضح التكامل بين الواجهة الأمامية والخلفية وقاعدة البيانات وخدمات الوسائط.
+        لذلك تم تقسيم النظام إلى طبقات واضحة: واجهة Flutter، وخادم FastAPI، وقاعدة بيانات MySQL، وسكربتات استيراد للمحتوى،
+        وتخزين مؤقت للصوت، ومصادقة للمستخدمين عبر Firebase.
+      </p>
+      <div class="pill-row">
+        <span class="pill">واجهة Flutter</span>
+        <span class="pill gold">خادم FastAPI</span>
+        <span class="pill green">قاعدة MySQL</span>
+        <span class="pill">Firebase Auth</span>
+        <span class="pill gold">صوت الفصول</span>
+        <span class="pill green">العربية والإنجليزية</span>
+      </div>
+      <div class="note">
+        في التهيئة الحالية للمكتبة توجد 100 رواية أو كتاب باللغة الإنجليزية و10 كتب باللغة العربية ضمن الفهرس، بينما تم استيراد كتابين فقط بشكل كامل للقراءة داخل التطبيق.
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">النطاق المنفذ</p>
+      <h2 class="section-title">2. الخصائص التي تم إنجازها</h2>
+      <div class="feature-grid">
+        <div class="card">
+          <h3>الواجهة الرئيسية للمكتبة</h3>
+          <p>تعرض الصفحة الرئيسية إحصاءات المكتبة والكتب المميزة والكتب الجاهزة للقراءة وأقسام الإنجليزية والعربية ومجموعة مختارة من العناوين.</p>
+        </div>
+        <div class="card">
+          <h3>البحث والتصفية</h3>
+          <p>يمكن للمستخدم البحث باسم الكتاب أو المؤلف، مع تصفية النتائج حسب جميع الكتب أو الكتب المتاحة للقراءة أو الكتب الإنجليزية أو العربية.</p>
+        </div>
+        <div class="card">
+          <h3>المفضلة الشخصية</h3>
+          <p>يمكن حفظ أي كتاب ضمن المفضلة، ويتم الاحتفاظ بهذه البيانات محلياً حتى بعد إغلاق التطبيق وإعادة تشغيله.</p>
+        </div>
+        <div class="card">
+          <h3>إنشاء الحساب وتسجيل الدخول</h3>
+          <p>يوفر التطبيق التسجيل وإنشاء الحساب والخروج باستخدام البريد الإلكتروني وكلمة المرور من خلال Firebase Authentication.</p>
+        </div>
+        <div class="card">
+          <h3>صفحة تفاصيل الكتاب</h3>
+          <p>توضح حالة الكتاب إن كان قابلاً للقراءة أو مجرد عنوان ضمن الفهرس، وتعرض اللغة وعدد الفصول والصفحات والوصف.</p>
+        </div>
+        <div class="card">
+          <h3>القراءة داخل التطبيق</h3>
+          <p>الكتب المتاحة كاملة يمكن قراءتها داخل التطبيق بطريقة منظمة حسب الفصول والمحتوى النصي لكل صفحة.</p>
+        </div>
+        <div class="card">
+          <h3>الصوت لكل فصل</h3>
+          <p>توفر صفحة الفصل إمكانية توليد ملف MP3 وتشغيله مع اختيار الصوت والتحكم بالإيقاف المؤقت والمتابعة والإيقاف.</p>
+        </div>
+        <div class="card">
+          <h3>تبديل اللغة مباشرة</h3>
+          <p>يمكن الانتقال بين العربية والإنجليزية من داخل التطبيق بشكل فوري دون الحاجة إلى بناء نسخة جديدة.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">يتابع التقرير العربي بشرح الواجهات والبنية التقنية وقاعدة البيانات وآلية العمل.</div>
+    <div class="page-number">7</div>
+  </section>
+
+  <section class="page rtl">
+    <div class="section">
+      <p class="section-kicker">شرح الواجهات</p>
+      <h2 class="section-title">3. شرح الشاشات وتجربة الاستخدام</h2>
+      <div class="screen-grid">
+        <div class="screen">
+          <h3>الهيكل الرئيسي</h3>
+          <p>يعتمد التطبيق على شريط تنقل سفلي يضم المفضلة والرئيسية والبحث، مما يجعل الوصول إلى الوظائف الأساسية واضحاً وسريعاً.</p>
+        </div>
+        <div class="screen">
+          <h3>الصفحة الرئيسية</h3>
+          <p>تُظهر بطاقات إحصائية وأقساماً متعددة للمكتبة، وهو ما يمنح المستخدم تصوراً سريعاً عن حجم المحتوى وطبيعته.</p>
+        </div>
+        <div class="screen">
+          <h3>صفحة البحث</h3>
+          <p>تسمح بالعثور على الكتب مباشرة عند كبر حجم الفهرس، مع أدوات تصفية واضحة وسهلة.</p>
+        </div>
+        <div class="screen">
+          <h3>صفحة المفضلة</h3>
+          <p>تجمع الكتب المحفوظة من المستخدم في مكان واحد لتكوين رف شخصي داخل التطبيق.</p>
+        </div>
+        <div class="screen">
+          <h3>صفحة المصادقة</h3>
+          <p>توفر نموذجاً بسيطاً لتسجيل الدخول أو إنشاء حساب باستخدام البريد الإلكتروني وكلمة المرور.</p>
+        </div>
+        <div class="screen">
+          <h3>صفحة المستخدم</h3>
+          <p>تعرض معلومات الحساب مثل البريد الإلكتروني والمعرف وتسمح بتسجيل الخروج.</p>
+        </div>
+        <div class="screen">
+          <h3>نافذة تفاصيل الكتاب</h3>
+          <p>تمثل نقطة القرار الأساسية، حيث تعرض حالة الكتاب ومعلوماته الرئيسية وزر القراءة داخل التطبيق.</p>
+        </div>
+        <div class="screen">
+          <h3>صفحتا القراءة والفصل</h3>
+          <p>تعرض صفحة القراءة النص الكامل على مستوى الفصول، بينما تركز صفحة الفصل على النص الجزئي والصوت والتحكم بالمشغل.</p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;">
+        ومن الجوانب الجمالية المهمة أن التطبيق لا يعتمد بالكامل على صور أغلفة جاهزة، بل ينشئ أغلفة بصرية موحدة باستخدام التدرجات اللونية والأحرف المختصرة والشارات،
+        مما يحافظ على هوية تصميمية ثابتة حتى عندما لا تتوفر صورة حقيقية للكتاب.
+      </p>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">البنية التقنية</p>
+      <h2 class="section-title">4. بنية النظام</h2>
+      <div class="architecture">
+        <div class="arch-box">
+          <h3>الواجهة الأمامية</h3>
+          <ul>
+            <li>Flutter وMaterial UI</li>
+            <li>ثيم موحد وألوان خاصة بالمشروع</li>
+            <li>دعم لغتين داخل التطبيق</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>خدمات التطبيق</h3>
+          <ul>
+            <li>ApiService لطلبات HTTP</li>
+            <li>FavoritesController لإدارة المفضلة</li>
+            <li>AuthService للتعامل مع Firebase</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>الخادم الخلفي</h3>
+          <ul>
+            <li>واجهات REST للكتب والفصول والصفحات والصوت</li>
+            <li>خدمة ملفات ثابتة للصوت</li>
+            <li>تهيئة الجداول عند بدء التشغيل</li>
+          </ul>
+        </div>
+        <div class="arch-box">
+          <h3>البيانات والوسائط</h3>
+          <ul>
+            <li>MySQL لتخزين المحتوى والفهرس</li>
+            <li>جدول خاص لتخزين كاش الصوت</li>
+            <li>ملفات MP3 ضمن مجلد الوسائط</li>
+          </ul>
+        </div>
+      </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>الطبقة</th>
+            <th>الدور</th>
+            <th>الأهمية داخل المشروع</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>العرض</td>
+            <td>صفحات وودجت Flutter</td>
+            <td>تقديم واجهة متعددة المنصات لعرض الكتب والقراءة والبحث والصوت والحساب الشخصي.</td>
+          </tr>
+          <tr>
+            <td>الحالة</td>
+            <td>ValueNotifier وInheritedNotifier</td>
+            <td>حل خفيف وواضح لإدارة اللغة والمفضلة دون الحاجة إلى مكتبات إدارة حالة كبيرة.</td>
+          </tr>
+          <tr>
+            <td>الاتصال</td>
+            <td>HTTP وJSON</td>
+            <td>فصل الواجهة عن البيانات والخدمات الخلفية لتسهيل الصيانة والتوسع.</td>
+          </tr>
+          <tr>
+            <td>المنطق التشغيلي</td>
+            <td>FastAPI وسكربتات الاستيراد</td>
+            <td>تنفيذ الاستعلامات وتجهيز المحتوى وتوليد الصوت وتقديمه للتطبيق.</td>
+          </tr>
+          <tr>
+            <td>التخزين</td>
+            <td>MySQL والتخزين المحلي</td>
+            <td>حفظ بيانات الكتب من جهة، وبيانات المستخدم المحلية مثل المفضلة من جهة أخرى.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer-note">اعتماد هذه البنية يجعل المشروع واضحاً أثناء المناقشة الأكاديمية وسهل التوسعة لاحقاً.</div>
+    <div class="page-number">8</div>
+  </section>
+  <section class="page rtl">
+    <div class="section">
+      <p class="section-kicker">الخلفية وقاعدة البيانات</p>
+      <h2 class="section-title">5. الخادم الخلفي والواجهات البرمجية وقاعدة البيانات</h2>
+      <p>
+        تم بناء الخادم الخلفي باستخدام FastAPI، ويقوم عند التشغيل بالتأكد من وجود الجداول الأساسية داخل قاعدة بيانات MySQL.
+        هذا الأسلوب يجعل تشغيل المشروع أسهل في بيئة العرض أو المناقشة، لأن الخادم يستطيع تجهيز البنية المطلوبة تلقائياً.
+      </p>
+      <p>
+        أهم الواجهات البرمجية المنفذة هي:
+      </p>
+      <ul>
+        <li><strong>`GET /books`</strong> لإرجاع جميع الكتب مع اللغة والحالة وعدد الفصول والصفحات.</li>
+        <li><strong>`GET /books/summary`</strong> لإرجاع إحصاءات الصفحة الرئيسية.</li>
+        <li><strong>`GET /books/{book_id}/chapters`</strong> لإرجاع فصول كتاب محدد.</li>
+        <li><strong>`GET /chapters/{chapter_id}/pages`</strong> لإرجاع نص الصفحات التابعة لفصل معين.</li>
+        <li><strong>`GET /chapters/{chapter_id}/audio`</strong> لتوليد أو إعادة استخدام ملف الصوت وإرجاع رابط التشغيل.</li>
+      </ul>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>اسم الجدول</th>
+            <th>الغرض</th>
+            <th>نوع البيانات المخزنة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>`books`</td>
+            <td>الفهرس الرئيسي</td>
+            <td>اسم الكتاب والمؤلف والوصف واللغة والترتيب والحالة المميزة</td>
+          </tr>
+          <tr>
+            <td>`chapters`</td>
+            <td>هيكلية الكتاب</td>
+            <td>ربط الكتاب بالفصول وأرقامها وعناوينها</td>
+          </tr>
+          <tr>
+            <td>`pages`</td>
+            <td>النص المقروء</td>
+            <td>رقم الصفحة والمحتوى النصي لكل فصل</td>
+          </tr>
+          <tr>
+            <td>`chapter_audio`</td>
+            <td>فهرس كاش الصوت</td>
+            <td>مسار ملف الصوت لكل فصل ولكل صوت مختار</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        يستخدم جدول الصوت مفتاحاً فريداً يربط الفصل باسم الصوت، لذلك يمكن حفظ أكثر من نسخة صوتية للفصل نفسه مثل Rachel وAdam.
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">نظام الصوت</p>
+      <h2 class="section-title">6. آلية توليد الصوت وتخزينه</h2>
+      <p>
+        عند طلب المستخدم الاستماع إلى فصل معين، يجمع الخادم النص الكامل للفصل، ثم يحدد إن كانت اللغة الغالبة عربية أو إنجليزية،
+        وبعد ذلك يبدأ إنشاء ملف MP3.
+      </p>
+      <p>
+        يتم استخدام ElevenLabs أولاً عند توفر المفتاح والمكتبة المطلوبة، وإذا تعذر ذلك يتم الانتقال تلقائياً إلى Google Text-to-Speech.
+        هذه الآلية مهمة لأنها تضيف مرونة عالية للمشروع وتمنع توقف الميزة عند غياب مزود واحد فقط.
+      </p>
+      <p>
+        بعد إنشاء الصوت يتم حفظه داخل مجلد الوسائط وتسجيله في قاعدة البيانات ليعاد استخدامه لاحقاً.
+        لذلك قد تكون أول عملية أبطأ قليلاً، بينما تصبح المرات اللاحقة أسرع بسبب وجود الكاش.
+      </p>
+      <div class="pill-row">
+        <span class="pill">Rachel</span>
+        <span class="pill gold">Adam</span>
+        <span class="pill green">كشف اللغة</span>
+        <span class="pill">تقسيم النص الطويل</span>
+        <span class="pill gold">تخزين MP3</span>
+      </div>
+    </div>
+
+    <div class="footer-note">ميزة الصوت تعد من أهم العناصر التي ترفع قيمة المشروع من فهرس كتب إلى منصة قراءة واستماع فعلية.</div>
+    <div class="page-number">9</div>
+  </section>
+
+  <section class="page rtl">
+    <div class="section">
+      <p class="section-kicker">تجهيز المحتوى</p>
+      <h2 class="section-title">7. آلية استيراد الكتب وتجهيز البيانات</h2>
+      <p>
+        لا يعتمد المشروع على إدخال يدوي بسيط للكتب فقط، بل يحتوي على سكربتات Python مخصصة لتحويل ملفات المصدر إلى بيانات منظمة يمكن للتطبيق قراءتها.
+        هذا يعطي المشروع بعداً عملياً مهماً، لأنه يوضح كيف يمكن الانتقال من ملف خام إلى نظام قراءة كامل.
+      </p>
+      <div class="stack-grid">
+        <div class="stack-item">
+          <h3>استيراد الكتاب الإنجليزي</h3>
+          <p>
+            يقوم سكربت `import_book.py` بمعالجة ملف JSON لكتاب <em>Alice's Adventures in Wonderland</em>،
+            وإصلاح ترميز النص وتنظيم العناوين ثم كتابة الفصول داخل قاعدة البيانات.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>استيراد الكتاب العربي</h3>
+          <p>
+            يقوم سكربت `import_amwaj_akma.py` بتنظيف الصفحات العربية الخام، وحذف الروابط والضجيج والآثار المختلطة،
+            ثم تقسيم المحتوى إلى أقسام وتصديره أيضاً بصيغة JSON منظمة قبل إدخاله إلى القاعدة.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>بذر المكتبة الكاملة</h3>
+          <p>
+            يستخدم `catalog_seed.py` لإدخال قائمة الكتب الكاملة مع الترتيب والتمييز وإعادة تحميل المحتوى المقروء،
+            حتى تبدأ النسخة التجريبية للمشروع ببيانات واضحة ومضبوطة.
+          </p>
+        </div>
+        <div class="stack-item">
+          <h3>استراتيجية الفهرس</h3>
+          <p>
+            يدعم التطبيق حالتين: كتب متاحة كاملة للقراءة، وكتب موجودة في الفهرس فقط.
+            هذا القرار يجعل المشروع قابلاً للتوسع التدريجي دون الحاجة إلى تجهيز النص الكامل لكل كتاب منذ البداية.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">تدفق العمل</p>
+      <h2 class="section-title">8. رحلة المستخدم وتدفق البيانات</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>الخطوة</th>
+            <th>فعل المستخدم</th>
+            <th>استجابة النظام</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>فتح التطبيق</td>
+            <td>يتم تهيئة Firebase وتحميل المفضلة وعرض الهيكل الرئيسي للتطبيق.</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>الدخول إلى الرئيسية أو البحث</td>
+            <td>تستدعي الواجهة بيانات الكتب من الخادم عبر `ApiService` ثم تعرضها باستخدام النماذج البرمجية.</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>فتح كتاب معين</td>
+            <td>تظهر نافذة التفاصيل وتحدد هل الكتاب متاح للقراءة أم أنه ضمن الفهرس فقط.</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>بدء القراءة</td>
+            <td>يتم تحميل الفصول والصفحات وبناء واجهة قراءة طويلة داخل التطبيق.</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>طلب الصوت</td>
+            <td>يقوم الخادم بتوليد الصوت أو استرجاعه من الكاش ثم يعيد رابط الملف ليتم تشغيله داخل التطبيق.</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>تغيير اللغة أو إضافة كتاب للمفضلة</td>
+            <td>تتحدث الواجهة مباشرة بفضل آلية إدارة الحالة الخفيفة المستخدمة في المشروع.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">التقييم</p>
+      <h2 class="section-title">9. نقاط القوة والقيود الحالية</h2>
+      <div class="summary-grid">
+        <div class="card">
+          <h3>نقاط القوة</h3>
+          <ul>
+            <li>فصل واضح بين الواجهة والخلفية والبيانات والوسائط</li>
+            <li>دعم حقيقي للغتين العربية والإنجليزية</li>
+            <li>وجود قراءة وصوت فعليين وليس مجرد عرض فهرس</li>
+            <li>إمكانية توسيع المحتوى عبر سكربتات الاستيراد</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>القيود الحالية</h3>
+          <ul>
+            <li>عدد الكتب الكاملة للقراءة ما زال محدوداً في النسخة الحالية</li>
+            <li>المفضلة محفوظة محلياً وليست مرتبطة بالسحابة</li>
+            <li>المصادقة تعتمد على البريد الإلكتروني وكلمة المرور فقط</li>
+            <li>لا توجد لوحة إدارة أو نظام توصيات حتى الآن</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">من الناحية الأكاديمية، يبرهن المشروع على فهم جيد للتكامل بين الواجهة والخلفية وإدارة المحتوى وتجربة المستخدم.</div>
+    <div class="page-number">10</div>
+  </section>
+
+  <section class="page rtl">
+    <div class="section">
+      <p class="section-kicker">التطوير المستقبلي</p>
+      <h2 class="section-title">10. مقترحات التطوير اللاحق</h2>
+      <div class="future-grid">
+        <div class="future">
+          <h3>زيادة عدد الكتب الكاملة</h3>
+          <p>إضافة كتب عربية وإنجليزية جديدة قابلة للقراءة بحيث تصبح نسبة المحتوى الكامل أعلى داخل التطبيق.</p>
+        </div>
+        <div class="future">
+          <h3>مزامنة المكتبة الشخصية</h3>
+          <p>حفظ المفضلة وتقدم القراءة وتفضيلات الصوت على مستوى الحساب بدلاً من التخزين المحلي فقط.</p>
+        </div>
+        <div class="future">
+          <h3>القراءة دون اتصال</h3>
+          <p>إتاحة تخزين النصوص والصوت محلياً لدعم الاستخدام في بيئات الاتصال المحدود.</p>
+        </div>
+        <div class="future">
+          <h3>لوحة إدارة للمحتوى</h3>
+          <p>إنشاء واجهة تحكم لإضافة الكتب واستيراد الملفات وتعديل البيانات الوصفية ومراجعة الوسائط الناتجة.</p>
+        </div>
+        <div class="future">
+          <h3>اقتراحات ذكية للكتب</h3>
+          <p>إضافة آليات توصية حسب اللغة أو الاهتمام أو سجل القراءة السابق.</p>
+        </div>
+        <div class="future">
+          <h3>جاهزية إنتاجية أعلى</h3>
+          <p>تحسين إدارة الأسرار، وإضافة تحليلات، وتوسيع الاختبارات، وتعزيز المراقبة والتعامل مع الأخطاء.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-kicker">الخاتمة</p>
+      <h2 class="section-title">11. الخاتمة العربية</h2>
+      <p>
+        يُعد تطبيق <strong>Books Library</strong> مشروع تخرج قوياً لأنه يجمع بين التفكير المنتج والتطبيق الهندسي الحقيقي.
+        فالمشروع لا يقدم واجهة شكلية فقط، بل يوفر منظومة متكاملة تشمل إدارة المحتوى، وقاعدة البيانات، والمصادقة،
+        وتجربة استخدام ثنائية اللغة، والقراءة داخل التطبيق، وتوليد الصوت عند الطلب.
+      </p>
+      <p>
+        ومن الناحية العلمية، يوضح المشروع دورة بناء منتج برمجي كاملة: تجهيز البيانات، وتصميم قاعدة البيانات،
+        وبناء الواجهات البرمجية، وتطوير الواجهة الأمامية، وإدارة الحالة، وربط الحسابات، وتقديم خصائص نهائية قابلة للعرض والمناقشة.
+        لذلك فهو مناسب جداً للعرض الأكاديمي ولمناقشة الجوانب التقنية والعملية في الوقت نفسه.
+      </p>
+    </div>
+
+    <div class="footer-note">End of bilingual report.</div>
+    <div class="page-number">11</div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books Library Code Explanation</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm;
+    }
+
+    :root {
+      --paper: #f3ede3;
+      --card: #fffdf9;
+      --ink: #172534;
+      --muted: #5f6b78;
+      --primary: #20486b;
+      --accent: #c77945;
+      --line: #e2d9cb;
+      --soft-blue: #e6edf7;
+      --soft-gold: #f7ecda;
+      --soft-green: #e4f1ea;
+      --shadow: rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Georgia", "Arial", "Segoe UI", sans-serif;
+      line-height: 1.62;
+    }
+
+    .document {
+      width: 210mm;
+      margin: 0 auto;
+      padding: 12mm 0 20mm;
+    }
+
+    .sheet {
+      background: white;
+      box-shadow: 0 20px 45px var(--shadow);
+      padding: 18mm;
+      margin-bottom: 12mm;
+    }
+
+    .cover {
+      background:
+        radial-gradient(circle at top right, rgba(199, 121, 69, 0.18), transparent 28%),
+        linear-gradient(145deg, #fffaf2 0%, #ffffff 48%, #f8efe2 100%);
+      min-height: 265mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 38px;
+      line-height: 1.12;
+      color: var(--ink);
+    }
+
+    .title-ar {
+      margin-top: 14px;
+      font-size: 28px;
+      line-height: 1.45;
+      color: var(--primary);
+      direction: rtl;
+      text-align: right;
+      font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
+    }
+
+    .lead {
+      margin-top: 18px;
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 150mm;
+    }
+
+    .lead.rtl {
+      direction: rtl;
+      text-align: right;
+      font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
+    }
+
+    .stat-grid,
+    .file-grid,
+    .map-grid,
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-top: 24px;
+    }
+
+    .stat,
+    .panel,
+    .file-card,
+    .flow-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 14px 16px;
+      break-inside: avoid;
+    }
+
+    .stat h2 {
+      margin: 0;
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .stat p,
+    .panel p,
+    .file-card p,
+    .flow-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .section {
+      break-before: page;
+    }
+
+    .section:first-of-type {
+      break-before: auto;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .section-subtitle {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .note {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      background: #fff7ef;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .file-path {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--soft-blue);
+      color: var(--ink);
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .file-card h3,
+    .panel h3,
+    .flow-card h3 {
+      margin: 0;
+      font-size: 17px;
+      color: var(--primary);
+    }
+
+    .label {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--soft-gold);
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .rtl {
+      direction: rtl;
+      text-align: right;
+      font-family: "Tahoma", "Arial", "Segoe UI", sans-serif;
+    }
+
+    .bullets {
+      margin: 10px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .rtl .bullets {
+      margin: 10px 18px 0 0;
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .toc ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .toc li {
+      margin: 8px 0;
+    }
+
+    .footer {
+      margin-top: 18px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .document {
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+
+      .sheet {
+        box-shadow: none;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="document">
+    <section class="sheet cover">
+      <div>
+        <div class="eyebrow">Code Documentation</div>
+        <h1>Books Library<br>Code Explanation Guide</h1>
+        <div class="title-ar">دليل شرح كود تطبيق Books Library</div>
+        <p class="lead">
+          This PDF explains the important code across the Flutter frontend and the Python backend.
+          Each entry names the file, explains its responsibility in English and Arabic, and highlights the important logic inside it.
+        </p>
+        <p class="lead rtl">
+          يشرح هذا الملف أهم أجزاء الكود في الواجهة الأمامية المبنية بـ Flutter والخلفية المكتوبة بـ Python.
+          كل جزء يذكر اسم الملف، ويشرح وظيفته بالإنجليزية والعربية، ويبين المنطق البرمجي المهم الموجود بداخله.
+        </p>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <h2>2</h2>
+            <p>Main code layers: frontend and backend.</p>
+          </div>
+          <div class="stat">
+            <h2>20+</h2>
+            <p>Important files explained in this guide.</p>
+          </div>
+          <div class="stat">
+            <h2>EN</h2>
+            <p>English explanation for every important part.</p>
+          </div>
+          <div class="stat">
+            <h2>AR</h2>
+            <p>Arabic explanation for every important part.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">Prepared on 14 April 2026 as a code-focused companion document for the project.</div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Reading Map</div>
+      <h2 class="section-title">1. How To Read This Codebase</h2>
+      <p class="section-subtitle">
+        The project is split into a Flutter client inside <code>lib/</code> and a FastAPI backend inside <code>book_backend/</code>.
+        Platform folders such as <code>android/</code>, <code>ios/</code>, <code>web/</code>, and <code>windows/</code> are configuration targets rather than the core application logic.
+      </p>
+
+      <div class="map-grid">
+        <div class="panel">
+          <h3>Frontend side</h3>
+          <p>The Flutter app handles UI, navigation, local state, API requests, reading screens, search, authentication screens, and audio playback controls.</p>
+          <span class="label">lib/</span>
+        </div>
+        <div class="panel rtl">
+          <h3>الواجهة الأمامية</h3>
+          <p>تدير واجهة Flutter الشاشات والتنقل والحالة المحلية وطلبات الـ API والقراءة والبحث وشاشات الحساب والتحكم بالصوت.</p>
+          <span class="label">lib/</span>
+        </div>
+        <div class="panel">
+          <h3>Backend side</h3>
+          <p>The Python backend provides REST endpoints, database access, schema creation, book seeding, content import, and chapter audio generation.</p>
+          <span class="label">book_backend/</span>
+        </div>
+        <div class="panel rtl">
+          <h3>الخلفية</h3>
+          <p>توفر الخلفية المكتوبة بـ Python الواجهات البرمجية، والوصول إلى قاعدة البيانات، وإنشاء الجداول، وبذر الكتب، واستيراد المحتوى، وتوليد الصوت.</p>
+          <span class="label">book_backend/</span>
+        </div>
+      </div>
+
+      <div class="toc" style="margin-top: 18px;">
+        <div class="panel">
+          <h3>Sections in this guide</h3>
+          <ol>
+            <li>Bootstrapping and global setup</li>
+            <li>Models and data contracts</li>
+            <li>Services and persistence</li>
+            <li>Pages and navigation</li>
+            <li>Reading and audio flow</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>More sections</h3>
+          <ol start="6">
+            <li>Reusable widgets and visual layer</li>
+            <li>Backend API and schema</li>
+            <li>Catalog seeding and import scripts</li>
+            <li>End-to-end runtime flow</li>
+            <li>Key engineering ideas</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="note">
+        This guide focuses on the important code. Generated configuration files such as <code>lib/firebase_options.dart</code> and the platform folders are not explained in depth because their role is setup rather than core business logic.
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Bootstrap</div>
+      <h2 class="section-title">2. Bootstrapping, Theme, and Localization</h2>
+      <p class="section-subtitle">These files create the app shell, initialize shared state, and make the whole interface bilingual.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/main.dart</div>
+          <h3>App entry point</h3>
+          <p><strong>English:</strong> `main()` initializes Flutter bindings, Firebase, and locally stored favorites before calling `runApp`. `MyApp` wraps `MaterialApp` with locale and favorites scopes so the whole app reacts to language and saved-book changes.</p>
+          <p class="rtl"><strong>العربية:</strong> يقوم `main()` بتهيئة Flutter وFirebase وبيانات المفضلة المحلية قبل تشغيل التطبيق. ثم يلف `MyApp` عنصر `MaterialApp` بنطاقي اللغة والمفضلة لكي تتحدث جميع الشاشات فوراً عند التغيير.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/theme/app_colors.dart</div>
+          <h3>Central color system</h3>
+          <p><strong>English:</strong> This file defines the project color palette in one place. Every page and widget uses these constants, which keeps the UI consistent and makes theme changes easy.</p>
+          <p class="rtl"><strong>العربية:</strong> يجمع هذا الملف ألوان المشروع في مكان واحد. تعتمد الشاشات والودجتات على هذه الثوابت، لذلك تبقى الهوية البصرية موحدة ويسهل تعديل الثيم لاحقاً.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/l10n/app_localizations.dart</div>
+          <h3>Text translations</h3>
+          <p><strong>English:</strong> Stores the English and Arabic text maps and exposes `context.l10n`. This is the main source of translated labels, buttons, messages, and screen text across the app.</p>
+          <p class="rtl"><strong>العربية:</strong> يحتوي على خريطة النصوص بالإنجليزية والعربية ويوفر الوصول إليها عبر `context.l10n`. وهو المصدر الأساسي لكل العناوين والأزرار والرسائل والنصوص داخل التطبيق.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/l10n/app_locale_controller.dart</div>
+          <h3>Language state controller</h3>
+          <p><strong>English:</strong> A lightweight `ValueNotifier<Locale>` that stores the active language and exposes `toggle()` and `setLocale()`. It is intentionally simple and avoids heavy state-management libraries.</p>
+          <p class="rtl"><strong>العربية:</strong> هو متحكم خفيف من نوع `ValueNotifier<Locale>` يحفظ اللغة الحالية ويوفر الدالتين `toggle()` و`setLocale()`. تم تصميمه ليكون بسيطاً بدون الاعتماد على مكتبات إدارة حالة كبيرة.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/widgets/language_switch_button.dart</div>
+          <h3>Runtime language switch</h3>
+          <p><strong>English:</strong> This button is reused across pages. It calls `AppLocaleController.of(context).toggle()` and shows the target language label from localization.</p>
+          <p class="rtl"><strong>العربية:</strong> هذا الزر مستخدم في أكثر من شاشة، ويستدعي `AppLocaleController.of(context).toggle()` ليبدل اللغة مباشرة، كما يعرض اسم اللغة القادمة من ملف الترجمة.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Models</div>
+      <h2 class="section-title">3. Models and Data Contracts</h2>
+      <p class="section-subtitle">These files describe the data shape exchanged between the frontend and the backend.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/models/book.dart</div>
+          <h3>Main book model</h3>
+          <p><strong>English:</strong> Represents a book returned by the API. It parses mixed JSON types safely, computes helper values such as `isArabic`, and gives the UI everything it needs to render cards and details.</p>
+          <p class="rtl"><strong>العربية:</strong> يمثل هذا الملف كيان الكتاب القادم من الـ API. كما يعالج اختلاف أنواع البيانات القادمة من JSON بشكل آمن، ويوفر خصائص مساعدة مثل `isArabic` لتسهيل عرض البطاقات والتفاصيل.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/models/chapter.dart</div>
+          <h3>Chapter structure</h3>
+          <p><strong>English:</strong> A small model that holds the chapter identity, owning book, chapter number, and title. It is used by the book details screen, the reader, and the audio screen.</p>
+          <p class="rtl"><strong>العربية:</strong> نموذج بسيط يمثل الفصل ويخزن المعرّف ورقم الكتاب ورقم الفصل والعنوان. يتم استخدامه في شاشة تفاصيل الكتاب والقراءة والصوت.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/models/book_page.dart</div>
+          <h3>Page content model</h3>
+          <p><strong>English:</strong> Holds one readable text unit inside a chapter. The reader and chapter screen use it to show numbered pages and text content.</p>
+          <p class="rtl"><strong>العربية:</strong> يمثل وحدة نصية واحدة داخل الفصل. تعتمد عليه شاشة القراءة وصفحة الفصل لعرض النص مع رقم الصفحة.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/models/catalog_summary.dart</div>
+          <h3>Dashboard statistics model</h3>
+          <p><strong>English:</strong> Stores the summary counts returned by `/books/summary`, such as total books, readable books, English books, and Arabic books.</p>
+          <p class="rtl"><strong>العربية:</strong> يخزن الإحصاءات القادمة من الواجهة `/books/summary` مثل عدد الكتب الكلي والكتب المقروءة والإنجليزية والعربية.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/models/chapter_audio.dart</div>
+          <h3>Audio response model</h3>
+          <p><strong>English:</strong> Represents the backend response for chapter narration. It stores the audio URL, selected voice, provider name, cache status, and chapter metadata.</p>
+          <p class="rtl"><strong>العربية:</strong> يمثل استجابة الخلفية الخاصة بصوت الفصل. ويحفظ رابط الملف الصوتي واسم الصوت المستخدم ومزود الخدمة وحالة الكاش وبيانات الفصل.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+    <section class="sheet section">
+      <div class="eyebrow">Services</div>
+      <h2 class="section-title">4. Frontend Services and Persistence</h2>
+      <p class="section-subtitle">These files connect the UI to APIs, Firebase, and local storage.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/services/api_service.dart</div>
+          <h3>HTTP gateway to the backend</h3>
+          <p><strong>English:</strong> This is the main networking layer. It chooses the base URL depending on platform, performs GET requests, parses JSON, and exposes typed methods such as `getBooks()`, `getChapters()`, `getPages()`, and `getChapterAudio()`.</p>
+          <p class="rtl"><strong>العربية:</strong> هذا الملف هو البوابة الأساسية للتواصل مع الخلفية. يحدد عنوان الخادم حسب المنصة، وينفذ طلبات GET، ويحول JSON إلى نماذج واضحة مثل `getBooks()` و`getChapters()` و`getPages()` و`getChapterAudio()`.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/services/auth_service.dart</div>
+          <h3>Firebase authentication wrapper</h3>
+          <p><strong>English:</strong> A focused wrapper around `FirebaseAuth`. It exposes sign-in, sign-up, sign-out, the auth state stream, and the current user object.</p>
+          <p class="rtl"><strong>العربية:</strong> يمثل غلافاً بسيطاً حول `FirebaseAuth`، ويقدم عمليات تسجيل الدخول وإنشاء الحساب والخروج، إضافة إلى تيار حالة المستخدم والمستخدم الحالي.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/services/favorites_controller.dart</div>
+          <h3>Favorite books state</h3>
+          <p><strong>English:</strong> Keeps the set of saved book IDs in memory, loads them from storage, updates them when a heart icon is pressed, and exposes them to the widget tree through `InheritedNotifier`.</p>
+          <p class="rtl"><strong>العربية:</strong> يدير مجموعة معرفات الكتب المحفوظة في الذاكرة، ويقوم بتحميلها من التخزين المحلي وتحديثها عند الضغط على القلب، ثم يمررها إلى الشجرة البرمجية عبر `InheritedNotifier`.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/services/favorites_storage_io.dart</div>
+          <h3>Native favorites persistence</h3>
+          <p><strong>English:</strong> Uses `shared_preferences` to save favorite book IDs on native platforms. This is what makes the favorites screen persistent after restart.</p>
+          <p class="rtl"><strong>العربية:</strong> يستخدم `shared_preferences` لحفظ معرفات الكتب المفضلة على المنصات الأصلية، وبذلك تبقى المفضلة محفوظة بعد إغلاق التطبيق وإعادة فتحه.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/services/favorites_storage_web.dart</div>
+          <h3>Web favorites persistence</h3>
+          <p><strong>English:</strong> Stores the same favorite IDs in browser `localStorage` when the app runs on web.</p>
+          <p class="rtl"><strong>العربية:</strong> يحفظ المعرّفات نفسها في `localStorage` الخاصة بالمتصفح عند تشغيل التطبيق على الويب.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/services/favorites_storage_stub.dart</div>
+          <h3>Fallback storage stub</h3>
+          <p><strong>English:</strong> Provides a safe fallback implementation when neither the IO nor web storage backend is available.</p>
+          <p class="rtl"><strong>العربية:</strong> يقدم تنفيذاً احتياطياً آمناً عندما لا تكون آلية التخزين الخاصة بالويب أو المنصات الأصلية متاحة.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Screens</div>
+      <h2 class="section-title">5. Navigation and Main Screens</h2>
+      <p class="section-subtitle">These files define how the user moves through the app and what each main screen does.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/pages/main_shell.dart</div>
+          <h3>Main navigation shell</h3>
+          <p><strong>English:</strong> Holds the floating bottom navigation bar and switches between Favorites, Home, and Search using an `IndexedStack`.</p>
+          <p class="rtl"><strong>العربية:</strong> يحتوي على شريط التنقل السفلي العائم وينقل المستخدم بين المفضلة والرئيسية والبحث باستخدام `IndexedStack`.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/home_page.dart</div>
+          <h3>Home dashboard</h3>
+          <p><strong>English:</strong> Loads books and catalog summary together, builds the statistics cards, and renders featured, readable, English, Arabic, and curated book sections.</p>
+          <p class="rtl"><strong>العربية:</strong> يقوم بتحميل الكتب مع ملخص الفهرس في وقت واحد، ثم يبني بطاقات الإحصاء ويعرض أقسام الكتب المميزة والجاهزة للقراءة والإنجليزية والعربية والمختارة.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/search_page.dart</div>
+          <h3>Search and filtering</h3>
+          <p><strong>English:</strong> Fetches the full catalog once, then filters it in memory by query and by category. This keeps the search interaction responsive on the client side.</p>
+          <p class="rtl"><strong>العربية:</strong> يجلب الفهرس مرة واحدة ثم يقوم بعملية التصفية داخلياً حسب نص البحث والفئة، وهذا يجعل تجربة البحث سريعة على جهة العميل.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/saved_page.dart</div>
+          <h3>Favorites shelf</h3>
+          <p><strong>English:</strong> Reuses the same book data as the home page but filters it to the IDs saved in `FavoritesController`, giving the user a personal shelf.</p>
+          <p class="rtl"><strong>العربية:</strong> يعيد استخدام بيانات الكتب نفسها، لكنه يفلترها حسب المعرّفات المخزنة في `FavoritesController` ليصنع رفاً شخصياً للمستخدم.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/auth_page.dart</div>
+          <h3>Sign in and sign up UI</h3>
+          <p><strong>English:</strong> Contains the email/password form and switches between login and registration modes. It is intentionally compact because the authentication logic lives in `AuthService`.</p>
+          <p class="rtl"><strong>العربية:</strong> يحتوي على نموذج البريد الإلكتروني وكلمة المرور، ويمكنه التبديل بين وضع تسجيل الدخول وإنشاء الحساب. بقي بسيطاً لأن منطق المصادقة الفعلي موجود داخل `AuthService`.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/user_page.dart</div>
+          <h3>User profile view</h3>
+          <p><strong>English:</strong> Reads the current Firebase user and shows basic account information such as email and UID, with a logout action.</p>
+          <p class="rtl"><strong>العربية:</strong> يقرأ المستخدم الحالي من Firebase ويعرض معلومات الحساب الأساسية مثل البريد الإلكتروني والمعرف، مع زر لتسجيل الخروج.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Reading Flow</div>
+      <h2 class="section-title">6. Book Details, Reading, and Audio Screens</h2>
+      <p class="section-subtitle">These files implement the main user-facing reading experience.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/pages/book_details_page.dart</div>
+          <h3>Book details decision screen</h3>
+          <p><strong>English:</strong> This file is central because it decides what the user can do with a book. It loads chapter data when the book is readable, shows status chips, allows favorite toggling, and routes the user to reading or chapter views.</p>
+          <p class="rtl"><strong>العربية:</strong> يعد هذا الملف محورياً لأنه يحدد ما الذي يمكن للمستخدم فعله مع الكتاب. يقوم بتحميل الفصول للكتب المقروءة، ويعرض شرائح الحالة، ويدير المفضلة، وينقل المستخدم إلى القراءة أو شاشة الفصل.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/book/read_text_page.dart</div>
+          <h3>Full-text reading page</h3>
+          <p><strong>English:</strong> Builds the continuous reading view for a whole book by asking `ApiService` for all chapters and their pages, then rendering them in order.</p>
+          <p class="rtl"><strong>العربية:</strong> يبني واجهة القراءة الكاملة للكتاب من خلال طلب جميع الفصول وصفحاتها من `ApiService` ثم ترتيبها وعرضها بالتسلسل.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/book/chapter_page.dart</div>
+          <h3>Chapter text and audio player</h3>
+          <p><strong>English:</strong> This is one of the most important files in the project. It fetches chapter pages, manages the `AudioPlayer`, tracks playback position and duration, lets the user switch voices, requests audio generation from the backend, and controls play, pause, resume, and stop.</p>
+          <p class="rtl"><strong>العربية:</strong> يعد هذا الملف من أهم ملفات المشروع. فهو يجلب صفحات الفصل، ويدير `AudioPlayer`، ويتابع زمن التشغيل والمدة، ويسمح بتبديل الأصوات، ويطلب توليد الصوت من الخلفية، ويدير أوامر التشغيل والإيقاف المؤقت والمتابعة والإيقاف.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/pages/book/info_page.dart</div>
+          <h3>Simple information viewer</h3>
+          <p><strong>English:</strong> A lightweight page that displays text information blocks using the same visual language as the rest of the app.</p>
+          <p class="rtl"><strong>العربية:</strong> صفحة بسيطة لعرض النصوص والمعلومات الإضافية بنفس اللغة البصرية المستخدمة في بقية التطبيق.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Reusable UI</div>
+      <h2 class="section-title">7. Shared Widgets and Visual Layer</h2>
+      <p class="section-subtitle">These widgets make the UI reusable and keep presentation logic out of the screen files.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">lib/widgets/book_card.dart</div>
+          <h3>Reusable book card</h3>
+          <p><strong>English:</strong> Renders a book in compact or large form, combines cover art, title, author, description, metadata pills, and favorite button, and is reused in Home, Search, and Favorites.</p>
+          <p class="rtl"><strong>العربية:</strong> يعرض الكتاب بصيغة صغيرة أو كبيرة، ويجمع الغلاف والعنوان والمؤلف والوصف والبيانات المختصرة وزر المفضلة، ويعاد استخدامه في الرئيسية والبحث والمفضلة.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/widgets/book_cover_art.dart</div>
+          <h3>Generated cover artwork</h3>
+          <p><strong>English:</strong> Builds visual book covers without depending on downloaded image files. It creates gradients, monograms, badges, and typography based on the book data.</p>
+          <p class="rtl"><strong>العربية:</strong> ينشئ أغلفة بصرية للكتب من دون الاعتماد على صور جاهزة. ويستخدم التدرجات والأحرف المختصرة والشارات والنصوص اعتماداً على بيانات الكتاب.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">lib/widgets/section_title.dart, category_button.dart</div>
+          <h3>Small presentation helpers</h3>
+          <p><strong>English:</strong> These kinds of files are used to keep small repeated UI patterns out of large page widgets, which makes the main pages easier to read and maintain.</p>
+          <p class="rtl"><strong>العربية:</strong> تستخدم هذه الملفات لعزل الأنماط البصرية الصغيرة المتكررة بعيداً عن الشاشات الكبيرة، مما يجعل قراءة صفحات التطبيق وصيانتها أسهل.</p>
+        </div>
+      </div>
+    </section>
+    <section class="sheet section">
+      <div class="eyebrow">Backend Core</div>
+      <h2 class="section-title">8. FastAPI Backend, Database, and Schema Logic</h2>
+      <p class="section-subtitle">These files are the server-side heart of the project.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">book_backend/main.py</div>
+          <h3>Main backend application</h3>
+          <p><strong>English:</strong> This is the most important backend file. It creates the FastAPI app, enables CORS, serves `/media`, initializes the schema at startup, and exposes all main API routes for books, summaries, chapters, pages, and chapter audio.</p>
+          <p class="rtl"><strong>العربية:</strong> هذا هو أهم ملف في الخلفية. ينشئ تطبيق FastAPI ويفعل CORS ويخدم ملفات `/media` ويهيئ الجداول عند البداية ويقدم جميع الواجهات البرمجية الرئيسية للكتب والملخصات والفصول والصفحات وصوت الفصول.</p>
+          <ul class="bullets">
+            <li>Important logic: `get_books()`, `get_books_summary()`, `get_chapters()`, `get_pages()`, `get_chapter_audio()`</li>
+            <li>Important helpers: `build_audio_text()`, `detect_tts_language()`, `save_audio_with_fallback()`</li>
+          </ul>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">book_backend/database.py</div>
+          <h3>Database connection</h3>
+          <p><strong>English:</strong> Keeps the MySQL connection logic isolated in one file so the rest of the backend can request a connection without duplicating credentials or setup code.</p>
+          <p class="rtl"><strong>العربية:</strong> يعزل منطق الاتصال بقاعدة MySQL في ملف مستقل، حتى تتمكن بقية ملفات الخلفية من طلب الاتصال دون تكرار الإعدادات أو بيانات الاتصال.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">book_backend/catalog_utils.py</div>
+          <h3>Schema and content utilities</h3>
+          <p><strong>English:</strong> Creates the `books`, `chapters`, `pages`, and `chapter_audio` tables, updates older schemas when needed, clears previous book content, replaces chapter data, and resets the catalog.</p>
+          <p class="rtl"><strong>العربية:</strong> ينشئ جداول `books` و`chapters` و`pages` و`chapter_audio`، ويحدث البنية القديمة عند الحاجة، ويحذف محتوى الكتاب السابق، ويستبدل الفصول، ويعيد ضبط الفهرس.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">book_backend/catalog_data.py</div>
+          <h3>Curated seed data</h3>
+          <p><strong>English:</strong> Defines the list of curated English and Arabic books, their descriptions, featured flags, and language codes. This is the source of the seeded library catalog.</p>
+          <p class="rtl"><strong>العربية:</strong> يحدد قائمة الكتب الإنجليزية والعربية المختارة، مع الأوصاف وحالة التمييز واللغة. وهو المصدر الأساسي لفهرس الكتب المزروع في قاعدة البيانات.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Import Pipeline</div>
+      <h2 class="section-title">9. Catalog Seeding and Book Import Scripts</h2>
+      <p class="section-subtitle">These files explain how raw source material becomes readable in the app.</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-path">book_backend/catalog_seed.py</div>
+          <h3>Full catalog seed script</h3>
+          <p><strong>English:</strong> Rebuilds the demo catalog from scratch, inserts the curated book list, and imports the two readable titles. It is the best file to read if you want to understand the project dataset lifecycle.</p>
+          <p class="rtl"><strong>العربية:</strong> يعيد بناء فهرس العرض من الصفر، ويدخل قائمة الكتب المختارة، ثم يستورد الكتابين الجاهزين للقراءة. وهو أفضل ملف لفهم دورة حياة بيانات المشروع.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">book_backend/import_book.py</div>
+          <h3>English JSON import</h3>
+          <p><strong>English:</strong> Imports the clean JSON version of <em>Alice's Adventures in Wonderland</em>. It repairs broken encoding, normalizes chapter titles, upserts the book record, and writes chapter/page content into the database.</p>
+          <p class="rtl"><strong>العربية:</strong> يستورد النسخة المنظفة من JSON الخاصة بكتاب <em>Alice's Adventures in Wonderland</em>. ويصلح الترميز المكسور وينظم عناوين الفصول ويحدث سجل الكتاب ثم يكتب الفصول والصفحات داخل القاعدة.</p>
+        </div>
+
+        <div class="file-card">
+          <div class="file-path">book_backend/import_amwaj_akma.py</div>
+          <h3>Arabic raw-page import</h3>
+          <p><strong>English:</strong> Cleans raw Arabic page data, removes noise such as links and mixed-language artifacts, groups pages into sections, exports a generated JSON file, and imports the final structure into MySQL.</p>
+          <p class="rtl"><strong>العربية:</strong> ينظف الصفحات العربية الخام، ويحذف الروابط والضجيج وآثار المزج اللغوي، ثم يجمع الصفحات في أقسام، ويصدر JSON منظماً، ويستورد البنية النهائية إلى MySQL.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        The import scripts are academically important because they show that the project does not only display data; it also transforms and prepares source material before users ever see it.
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Runtime Flow</div>
+      <h2 class="section-title">10. End-to-End Code Flow</h2>
+      <p class="section-subtitle">This section connects the files together so you can explain the system during presentation.</p>
+
+      <div class="flow-grid">
+        <div class="flow-card">
+          <h3>App startup</h3>
+          <p><strong>Files:</strong> `lib/main.dart`, `lib/l10n/app_locale_controller.dart`, `lib/services/favorites_controller.dart`</p>
+          <p><strong>English:</strong> The app initializes Firebase and favorites, builds the global scopes, and launches the navigation shell.</p>
+          <p class="rtl"><strong>العربية:</strong> يهيئ التطبيق Firebase والمفضلة، ثم يبني النطاقات العامة ويشغل الهيكل الرئيسي للتنقل.</p>
+        </div>
+
+        <div class="flow-card">
+          <h3>Browsing books</h3>
+          <p><strong>Files:</strong> `lib/pages/home_page.dart`, `lib/pages/search_page.dart`, `lib/services/api_service.dart`, `book_backend/main.py`</p>
+          <p><strong>English:</strong> The frontend requests books and summary data, and the backend returns catalog rows enriched with readability and statistics.</p>
+          <p class="rtl"><strong>العربية:</strong> تطلب الواجهة بيانات الكتب والملخص، وتعيد الخلفية سجلات الفهرس مع حالة القراءة والإحصاءات.</p>
+        </div>
+
+        <div class="flow-card">
+          <h3>Opening a book</h3>
+          <p><strong>Files:</strong> `lib/pages/book_details_page.dart`, `lib/models/chapter.dart`, `book_backend/main.py`</p>
+          <p><strong>English:</strong> Book details request the chapter list, display metadata, and decide whether the user can read the book in-app or only preview it in the catalog.</p>
+          <p class="rtl"><strong>العربية:</strong> تطلب شاشة التفاصيل قائمة الفصول وتعرض البيانات الأساسية وتحدد هل يمكن قراءة الكتاب داخل التطبيق أم أنه مجرد عرض ضمن الفهرس.</p>
+        </div>
+
+        <div class="flow-card">
+          <h3>Reading text</h3>
+          <p><strong>Files:</strong> `lib/pages/book/read_text_page.dart`, `lib/models/book_page.dart`, `lib/services/api_service.dart`</p>
+          <p><strong>English:</strong> The app loads all chapters and pages, then renders them in order as a full reading experience.</p>
+          <p class="rtl"><strong>العربية:</strong> يحمل التطبيق جميع الفصول والصفحات ثم يعرضها بالتسلسل لتكوين تجربة قراءة كاملة.</p>
+        </div>
+
+        <div class="flow-card">
+          <h3>Listening to audio</h3>
+          <p><strong>Files:</strong> `lib/pages/book/chapter_page.dart`, `lib/models/chapter_audio.dart`, `book_backend/main.py`</p>
+          <p><strong>English:</strong> The chapter page asks the backend for narration, the backend generates or reuses an MP3, and the app streams it with audio controls.</p>
+          <p class="rtl"><strong>العربية:</strong> تطلب صفحة الفصل السرد الصوتي من الخلفية، فتقوم الخلفية بتوليد ملف MP3 أو استرجاعه من الكاش، ثم يشغله التطبيق مع أدوات التحكم.</p>
+        </div>
+
+        <div class="flow-card">
+          <h3>Authentication</h3>
+          <p><strong>Files:</strong> `lib/pages/auth_page.dart`, `lib/pages/user_page.dart`, `lib/services/auth_service.dart`</p>
+          <p><strong>English:</strong> The UI delegates account operations to `AuthService`, which forwards them to Firebase Authentication.</p>
+          <p class="rtl"><strong>العربية:</strong> تفوض الواجهة عمليات الحساب إلى `AuthService` الذي ينقلها بدوره إلى Firebase Authentication.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="sheet section">
+      <div class="eyebrow">Presentation Notes</div>
+      <h2 class="section-title">11. Key Engineering Ideas To Mention</h2>
+      <p class="section-subtitle">If you present the code during your final-year discussion, these are strong points to explain.</p>
+
+      <div class="file-grid">
+        <div class="panel">
+          <h3>1. Clear separation of concerns</h3>
+          <p>UI files focus on presentation, service files focus on communication and persistence, model files focus on data shape, and backend files focus on APIs and data processing.</p>
+        </div>
+        <div class="panel rtl">
+          <h3>1. فصل واضح للمسؤوليات</h3>
+          <p>ملفات الواجهة تهتم بالعرض، وملفات الخدمات تهتم بالاتصال والتخزين، وملفات النماذج تهتم بشكل البيانات، أما الخلفية فتركز على الواجهات والمعالجة.</p>
+        </div>
+        <div class="panel">
+          <h3>2. Lightweight state management</h3>
+          <p>The app uses `ValueNotifier` and `InheritedNotifier` instead of a heavy framework. This is a good engineering choice for a medium-sized academic project.</p>
+        </div>
+        <div class="panel rtl">
+          <h3>2. إدارة حالة خفيفة</h3>
+          <p>يستخدم التطبيق `ValueNotifier` و`InheritedNotifier` بدلاً من إطار ضخم لإدارة الحالة، وهو اختيار مناسب لمشروع أكاديمي متوسط الحجم.</p>
+        </div>
+        <div class="panel">
+          <h3>3. Bilingual-first design</h3>
+          <p>The code handles both English and Arabic at the interface level, text direction level, and content level, which makes the project stronger than a single-language demo.</p>
+        </div>
+        <div class="panel rtl">
+          <h3>3. تصميم ثنائي اللغة منذ البداية</h3>
+          <p>يتعامل الكود مع الإنجليزية والعربية على مستوى الواجهة واتجاه النص والمحتوى، وهذا يجعل المشروع أقوى من نموذج أحادي اللغة.</p>
+        </div>
+        <div class="panel">
+          <h3>4. Practical media pipeline</h3>
+          <p>The audio system is not fake UI. It includes generation, fallback providers, cache reuse, and streaming playback, which is strong evidence of full-stack implementation.</p>
+        </div>
+        <div class="panel rtl">
+          <h3>4. منظومة وسائط عملية</h3>
+          <p>نظام الصوت ليس مجرد واجهة شكلية، بل يشمل التوليد ومزوداً احتياطياً وإعادة استخدام الكاش والتشغيل الفعلي، وهذا دليل قوي على تنفيذ متكامل.</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        Conclusion: if you explain the code in this order, you can move naturally from app startup, to data loading, to reading, to audio, and finally to backend processing and import scripts.
+      </div>
+    </section>
+  </main>
+</body>
+</html>
