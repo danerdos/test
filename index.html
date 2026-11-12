@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#f7f7f2"><title>Daner Dos — Animated Card</title><style>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#111416"><title>Daner Dos — Animated Card</title><style>
 :root{--background:#f7f7f2;--surface:#fff;--text:#181a16;--muted:#676b61;--line:rgba(24,26,22,.13);--line-strong:rgba(24,26,22,.24);--accent:#1b75bb;--accent-fill:#1b75bb}*{box-sizing:border-box}body{margin:0;background:#e9eceb;color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}.app{min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:18px;gap:14px}.toolbar{width:min(100%,960px);display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px}.brand-mark{display:grid;place-items:center;width:42px;height:42px;background:#1b75bb;color:white;font-weight:800;font-size:20px}.brand strong,.brand small{display:block}.brand small{font-size:12px;color:#68716d}.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{border:1px solid #cad2d2;background:white;padding:10px 13px;font:600 13px inherit;cursor:pointer;border-radius:6px}.actions button:hover{background:#e9f1fb}.stage{width:min(100%,960px);flex:1;min-height:560px;background:var(--background);overflow:hidden;display:grid;place-items:center;position:relative;box-shadow:0 16px 45px #17232a12}.scene{width:100%;height:100%;min-height:560px;display:grid;place-items:center;overflow:hidden}.hero-visual{width:100%}.hint{color:#68716d;text-align:center;font-size:12px;margin-bottom:6px}
 .hero-visual {
   position: relative;
@@ -208,6 +208,61 @@ body.recording .exit-recording{display:block}
 @keyframes codeAppear {from{opacity:0; transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 .stage.vertical .profile-code { padding:38px 0; font-size:11px; }
 @media(max-width:620px){.profile-code{padding:34px 0;font-size:clamp(9px,2.7vw,11px)}.stage.vertical .profile-code{padding:38px 0;font-size:11px}}
+
+/* Recording edition: fixed dark appearance and true mobile sizing. */
+:root{color-scheme:dark;--background:#20221e;--surface:#101418;--text:#e8edf3;--muted:#aab3bf;--line:rgba(140,165,185,.17);--line-strong:rgba(140,165,185,.23);--accent:#0F75BC;--accent-fill:#0F75BC}
+html,body{background:var(--background)!important;color:var(--text)}
+body.recording .app,body.recording .stage.vertical,body.recording .scene{width:100%!important;height:100dvh!important;max-width:none!important;min-height:0!important;aspect-ratio:auto!important;overflow:hidden}
+body.recording .stage.vertical .hero-visual{position:relative;width:100%!important;max-width:none!important;min-height:0!important;height:100%!important;transform:none!important;display:grid;place-items:center}
+body.recording .stage.vertical .orbit-one{width:min(98vw,520px)!important;height:min(98vw,520px)!important;max-width:none!important;max-height:none!important}
+body.recording .stage.vertical .profile-card{width:min(82vw,390px)!important;max-width:none!important;min-width:0!important;padding:14px clamp(13px,3vw,22px) 22px!important;background:linear-gradient(145deg,rgba(27,117,187,.11),transparent 60%),rgba(12,16,21,.98)!important;box-shadow:0 25px 70px rgba(0,0,0,.36)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(10px,2.65vw,13px)!important;padding:48px 0 30px!important;white-space:nowrap}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(16px,4.2vw,22px)!important}
+body.recording .stage.vertical .profile-top .card-logo{width:clamp(42px,12vw,62px)!important;height:clamp(42px,12vw,62px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(17px,4.4vw,23px)!important}
+@media(min-width:700px){body.recording .stage.vertical .profile-card{width:390px!important}body.recording .stage.vertical .orbit-one{width:520px!important;height:520px!important}}
+@media(max-width:360px){body.recording .stage.vertical .profile-card{width:84vw!important}body.recording .stage.vertical .profile-code{font-size:9.5px!important}}
+
+/* Recording: larger, readable typography on mobile. */
+body.recording .stage.vertical .profile-card{width:min(91vw,420px)!important;padding-left:clamp(10px,3vw,18px)!important;padding-right:clamp(10px,3vw,18px)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(12px,3.55vw,16px)!important;line-height:1.65!important}
+body.recording .stage.vertical .profile-code .source-line.indent{padding-left:10px}
+body.recording .stage.vertical .profile-code .source-line.indent2{padding-left:19px}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(19px,5vw,25px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(20px,5.1vw,26px)!important}
+@media(max-width:360px){body.recording .stage.vertical .profile-code{font-size:clamp(11px,3.35vw,13px)!important}}
+
+/* Reel edition: solid card and drifting background particles. */
+html,body,body.recording .stage.vertical{background:#20221e!important}
+body.recording .stage.vertical .profile-card{
+  background:#101418!important;
+  background-image:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  border-color:rgba(140,165,185,.20)!important;
+}
+body.recording .stage.vertical .orbit,body.recording .stage.vertical .orbit-trails{display:none!important}
+body.recording .stage.vertical .hero-visual{isolation:isolate}
+.floating-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.floating-particles .particle{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#0F75BC;opacity:0;box-shadow:0 0 9px 2px rgba(15,117,188,.36),0 0 22px rgba(15,117,188,.18);animation:particleDrift var(--duration) ease-in-out var(--delay) infinite alternate;will-change:transform,opacity}
+@keyframes particleDrift{0%{transform:translate3d(0,15px,0) scale(.65);opacity:.08}35%{opacity:var(--opacity)}70%{opacity:calc(var(--opacity) * .7)}100%{transform:translate3d(var(--dx),var(--dy),0) scale(1.15);opacity:.12}}
+body.recording .stage.vertical .profile-card{z-index:2}
+@media(prefers-reduced-motion:reduce){.floating-particles .particle{animation-duration:20s}}
+/* Larger brand logo; consistent particle visibility throughout recording. */
+body.recording .stage.vertical .profile-top .card-logo {
+  width:clamp(68px,19vw,88px)!important;
+  height:clamp(68px,19vw,88px)!important;
+}
+.floating-particles .particle {
+  opacity:var(--opacity);
+  animation-name:particleDriftSteady!important;
+  animation-timing-function:linear!important;
+}
+@keyframes particleDriftSteady {
+  0% {transform:translate3d(0,14px,0) scale(.9);opacity:calc(var(--opacity) * .88)}
+  50% {transform:translate3d(calc(var(--dx) * .5),calc(var(--dy) * .5),0) scale(1.1);opacity:var(--opacity)}
+  100% {transform:translate3d(var(--dx),var(--dy),0) scale(.9);opacity:calc(var(--opacity) * .88)}
+}
 </style><style>
 /* Locked portrait composition for Reel recording, on desktop and mobile. */
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:var(--background)}
@@ -220,9 +275,147 @@ body.recording .stage.vertical .hero-visual{width:480px;max-width:none;min-heigh
 @media(max-width:375px){body.recording .stage.vertical .hero-visual{transform:scale(.60)}}
 @media(max-width:330px){body.recording .stage.vertical .hero-visual{transform:scale(.52)}}
 @media(max-height:650px){body.recording .stage.vertical .hero-visual{transform:scale(.56)}}
-</style></head>
+
+/* Recording edition: fixed dark appearance and true mobile sizing. */
+:root{color-scheme:dark;--background:#20221e;--surface:#101418;--text:#e8edf3;--muted:#aab3bf;--line:rgba(140,165,185,.17);--line-strong:rgba(140,165,185,.23);--accent:#0F75BC;--accent-fill:#0F75BC}
+html,body{background:var(--background)!important;color:var(--text)}
+body.recording .app,body.recording .stage.vertical,body.recording .scene{width:100%!important;height:100dvh!important;max-width:none!important;min-height:0!important;aspect-ratio:auto!important;overflow:hidden}
+body.recording .stage.vertical .hero-visual{position:relative;width:100%!important;max-width:none!important;min-height:0!important;height:100%!important;transform:none!important;display:grid;place-items:center}
+body.recording .stage.vertical .orbit-one{width:min(98vw,520px)!important;height:min(98vw,520px)!important;max-width:none!important;max-height:none!important}
+body.recording .stage.vertical .profile-card{width:min(82vw,390px)!important;max-width:none!important;min-width:0!important;padding:14px clamp(13px,3vw,22px) 22px!important;background:linear-gradient(145deg,rgba(27,117,187,.11),transparent 60%),rgba(12,16,21,.98)!important;box-shadow:0 25px 70px rgba(0,0,0,.36)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(10px,2.65vw,13px)!important;padding:48px 0 30px!important;white-space:nowrap}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(16px,4.2vw,22px)!important}
+body.recording .stage.vertical .profile-top .card-logo{width:clamp(42px,12vw,62px)!important;height:clamp(42px,12vw,62px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(17px,4.4vw,23px)!important}
+@media(min-width:700px){body.recording .stage.vertical .profile-card{width:390px!important}body.recording .stage.vertical .orbit-one{width:520px!important;height:520px!important}}
+@media(max-width:360px){body.recording .stage.vertical .profile-card{width:84vw!important}body.recording .stage.vertical .profile-code{font-size:9.5px!important}}
+
+/* Recording: larger, readable typography on mobile. */
+body.recording .stage.vertical .profile-card{width:min(91vw,420px)!important;padding-left:clamp(10px,3vw,18px)!important;padding-right:clamp(10px,3vw,18px)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(12px,3.55vw,16px)!important;line-height:1.65!important}
+body.recording .stage.vertical .profile-code .source-line.indent{padding-left:10px}
+body.recording .stage.vertical .profile-code .source-line.indent2{padding-left:19px}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(19px,5vw,25px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(20px,5.1vw,26px)!important}
+@media(max-width:360px){body.recording .stage.vertical .profile-code{font-size:clamp(11px,3.35vw,13px)!important}}
+
+/* Reel edition: solid card and drifting background particles. */
+html,body,body.recording .stage.vertical{background:#20221e!important}
+body.recording .stage.vertical .profile-card{
+  background:#101418!important;
+  background-image:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  border-color:rgba(140,165,185,.20)!important;
+}
+body.recording .stage.vertical .orbit,body.recording .stage.vertical .orbit-trails{display:none!important}
+body.recording .stage.vertical .hero-visual{isolation:isolate}
+.floating-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.floating-particles .particle{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#0F75BC;opacity:0;box-shadow:0 0 9px 2px rgba(15,117,188,.36),0 0 22px rgba(15,117,188,.18);animation:particleDrift var(--duration) ease-in-out var(--delay) infinite alternate;will-change:transform,opacity}
+@keyframes particleDrift{0%{transform:translate3d(0,15px,0) scale(.65);opacity:.08}35%{opacity:var(--opacity)}70%{opacity:calc(var(--opacity) * .7)}100%{transform:translate3d(var(--dx),var(--dy),0) scale(1.15);opacity:.12}}
+body.recording .stage.vertical .profile-card{z-index:2}
+@media(prefers-reduced-motion:reduce){.floating-particles .particle{animation-duration:20s}}
+/* Larger brand logo; consistent particle visibility throughout recording. */
+body.recording .stage.vertical .profile-top .card-logo {
+  width:clamp(68px,19vw,88px)!important;
+  height:clamp(68px,19vw,88px)!important;
+}
+.floating-particles .particle {
+  opacity:var(--opacity);
+  animation-name:particleDriftSteady!important;
+  animation-timing-function:linear!important;
+}
+@keyframes particleDriftSteady {
+  0% {transform:translate3d(0,14px,0) scale(.9);opacity:calc(var(--opacity) * .88)}
+  50% {transform:translate3d(calc(var(--dx) * .5),calc(var(--dy) * .5),0) scale(1.1);opacity:var(--opacity)}
+  100% {transform:translate3d(var(--dx),var(--dy),0) scale(.9);opacity:calc(var(--opacity) * .88)}
+}
+</style>
+<style>
+/* Mobile reel: use the available portrait width, not a shrunken desktop preview. */
+body.recording .stage.vertical .hero-visual{transform:scale(.98);}
+@media(max-width:430px){body.recording .stage.vertical .hero-visual{transform:scale(.94);}}
+@media(max-width:375px){body.recording .stage.vertical .hero-visual{transform:scale(.85);}}
+@media(max-width:330px){body.recording .stage.vertical .hero-visual{transform:scale(.73);}}
+@media(max-height:650px){body.recording .stage.vertical .hero-visual{transform:scale(.82);}}
+/* Reveal the card first, then the source, then the build output. */
+.profile-card{animation:cardArrive .95s .2s both ease-out, gentleFloat 5.5s 1.2s ease-in-out infinite;}
+@keyframes cardArrive{from{opacity:0;translate:0 20px}to{opacity:1;translate:0 0}}
+.profile-top{animation-delay:.8s;}
+.profile-code{animation-delay:1.25s;}
+.profile-code .source-line:nth-child(1){animation-delay:2.15s}
+.profile-code .source-line:nth-child(2){animation-delay:2.45s}
+.profile-code .source-line:nth-child(3){animation-delay:2.75s}
+.profile-code .source-line:nth-child(4){animation-delay:3.05s}
+.profile-code .source-line:nth-child(5){animation-delay:3.35s}
+.profile-code .source-line:nth-child(6){animation-delay:3.65s}
+.profile-code .source-line:nth-child(7){animation-delay:3.95s}
+.profile-code .source-line:nth-child(8){animation-delay:4.25s}
+.profile-code .source-line:nth-child(9){animation-delay:4.55s}
+.profile-code .source-line:nth-child(10){animation-delay:4.85s}
+.profile-code .source-line:nth-child(11){animation-delay:5.15s}
+.profile-code .source-line:nth-child(12){animation-delay:5.45s}
+.build-line{animation-delay:6.5s}
+.build-success{animation-delay:7.7s}
+
+/* Recording edition: fixed dark appearance and true mobile sizing. */
+:root{color-scheme:dark;--background:#20221e;--surface:#101418;--text:#e8edf3;--muted:#aab3bf;--line:rgba(140,165,185,.17);--line-strong:rgba(140,165,185,.23);--accent:#0F75BC;--accent-fill:#0F75BC}
+html,body{background:var(--background)!important;color:var(--text)}
+body.recording .app,body.recording .stage.vertical,body.recording .scene{width:100%!important;height:100dvh!important;max-width:none!important;min-height:0!important;aspect-ratio:auto!important;overflow:hidden}
+body.recording .stage.vertical .hero-visual{position:relative;width:100%!important;max-width:none!important;min-height:0!important;height:100%!important;transform:none!important;display:grid;place-items:center}
+body.recording .stage.vertical .orbit-one{width:min(98vw,520px)!important;height:min(98vw,520px)!important;max-width:none!important;max-height:none!important}
+body.recording .stage.vertical .profile-card{width:min(82vw,390px)!important;max-width:none!important;min-width:0!important;padding:14px clamp(13px,3vw,22px) 22px!important;background:linear-gradient(145deg,rgba(27,117,187,.11),transparent 60%),rgba(12,16,21,.98)!important;box-shadow:0 25px 70px rgba(0,0,0,.36)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(10px,2.65vw,13px)!important;padding:48px 0 30px!important;white-space:nowrap}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(16px,4.2vw,22px)!important}
+body.recording .stage.vertical .profile-top .card-logo{width:clamp(42px,12vw,62px)!important;height:clamp(42px,12vw,62px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(17px,4.4vw,23px)!important}
+@media(min-width:700px){body.recording .stage.vertical .profile-card{width:390px!important}body.recording .stage.vertical .orbit-one{width:520px!important;height:520px!important}}
+@media(max-width:360px){body.recording .stage.vertical .profile-card{width:84vw!important}body.recording .stage.vertical .profile-code{font-size:9.5px!important}}
+
+/* Recording: larger, readable typography on mobile. */
+body.recording .stage.vertical .profile-card{width:min(91vw,420px)!important;padding-left:clamp(10px,3vw,18px)!important;padding-right:clamp(10px,3vw,18px)!important}
+body.recording .stage.vertical .profile-code{font-size:clamp(12px,3.55vw,16px)!important;line-height:1.65!important}
+body.recording .stage.vertical .profile-code .source-line.indent{padding-left:10px}
+body.recording .stage.vertical .profile-code .source-line.indent2{padding-left:19px}
+body.recording .stage.vertical .profile-top>span:not(.status-dot){font-size:clamp(19px,5vw,25px)!important}
+body.recording .stage.vertical .build-success{font-size:clamp(20px,5.1vw,26px)!important}
+@media(max-width:360px){body.recording .stage.vertical .profile-code{font-size:clamp(11px,3.35vw,13px)!important}}
+
+/* Reel edition: solid card and drifting background particles. */
+html,body,body.recording .stage.vertical{background:#20221e!important}
+body.recording .stage.vertical .profile-card{
+  background:#101418!important;
+  background-image:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  border-color:rgba(140,165,185,.20)!important;
+}
+body.recording .stage.vertical .orbit,body.recording .stage.vertical .orbit-trails{display:none!important}
+body.recording .stage.vertical .hero-visual{isolation:isolate}
+.floating-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.floating-particles .particle{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border-radius:50%;background:#0F75BC;opacity:0;box-shadow:0 0 9px 2px rgba(15,117,188,.36),0 0 22px rgba(15,117,188,.18);animation:particleDrift var(--duration) ease-in-out var(--delay) infinite alternate;will-change:transform,opacity}
+@keyframes particleDrift{0%{transform:translate3d(0,15px,0) scale(.65);opacity:.08}35%{opacity:var(--opacity)}70%{opacity:calc(var(--opacity) * .7)}100%{transform:translate3d(var(--dx),var(--dy),0) scale(1.15);opacity:.12}}
+body.recording .stage.vertical .profile-card{z-index:2}
+@media(prefers-reduced-motion:reduce){.floating-particles .particle{animation-duration:20s}}
+/* Larger brand logo; consistent particle visibility throughout recording. */
+body.recording .stage.vertical .profile-top .card-logo {
+  width:clamp(68px,19vw,88px)!important;
+  height:clamp(68px,19vw,88px)!important;
+}
+.floating-particles .particle {
+  opacity:var(--opacity);
+  animation-name:particleDriftSteady!important;
+  animation-timing-function:linear!important;
+}
+@keyframes particleDriftSteady {
+  0% {transform:translate3d(0,14px,0) scale(.9);opacity:calc(var(--opacity) * .88)}
+  50% {transform:translate3d(calc(var(--dx) * .5),calc(var(--dy) * .5),0) scale(1.1);opacity:var(--opacity)}
+  100% {transform:translate3d(var(--dx),var(--dy),0) scale(.9);opacity:calc(var(--opacity) * .88)}
+}
+</style>
+</head>
 <body class="recording"><main class="app"><section class="stage vertical" id="stage" aria-label="Animated card preview"><div class="scene" id="scene">      <div class="hero-visual" aria-label="Developer profile card">
-        <div class="orbit orbit-one"><div class="orbit-trails"></div></div>
+        <div class="floating-particles" id="floating-particles" aria-hidden="true"></div>
         
 
         <div class="profile-card">
@@ -251,4 +444,26 @@ body.recording .stage.vertical .hero-visual{width:480px;max-width:none;min-heigh
 
 
         </div>
-      </div></div></section></main></body></html>
+      </div></div></section></main><script>
+(function(){
+  const layer=document.getElementById('floating-particles');
+  if(!layer)return;
+  // Deterministic distribution, favoring visible space around the card.
+  let seed=1793;
+  function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+  for(let i=0;i<55;i++){
+    const dot=document.createElement('span');dot.className='particle';
+    const x=4+random()*92,y=5+random()*90;
+    const size=(2+random()*3.8).toFixed(1)+'px';
+    dot.style.setProperty('--x',x.toFixed(2)+'%');
+    dot.style.setProperty('--y',y.toFixed(2)+'%');
+    dot.style.setProperty('--size',size);
+    dot.style.setProperty('--dx',((random()-.5)*75).toFixed(1)+'px');
+    dot.style.setProperty('--dy',(-35-random()*110).toFixed(1)+'px');
+    dot.style.setProperty('--duration',(5+random()*7).toFixed(2)+'s');
+    dot.style.setProperty('--delay',(-random()*12).toFixed(2)+'s');
+    dot.style.setProperty('--opacity',(.42+random()*.38).toFixed(2));
+    layer.appendChild(dot);
+  }
+})();
+</script></body></html>
